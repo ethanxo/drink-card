@@ -112,6 +112,7 @@
         document.getElementById('cards').appendChild(clone); 
         let card = document.getElementById('cards').children[document.getElementById('cards').children.length - 1];
         console.log(card.shadowRoot); // DEBUG
+        console.log(card.shadowRoot.querySelector(".card")) // DEBUG
         card.classList.add('dupecard'); // BROKEN
         card.children[3].addEventListener('click', _details); // BROKEN
       }
