@@ -10,21 +10,196 @@
   <title>Drink Cards</title>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+
     html,
     body {
       margin: 0;
       padding: 0;
-      font-family: sans-serif;
+      font-family: 'Lato', sans-serif;
       background-color: #ededed;
+      font-weight: 300;
+    }
+
+    .controls {
+      margin: 16px auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+    .controls > .button {
+      width: 20%;
+    }
+
+    .cards {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .button {
+      background-color: #2895e8; /* Blue */
+      border: none;
+      color: white;
+      padding: 8px 2vw;
+      text-align: center;
+      text-decoration: none;
+      font-size: 14px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      border-radius: 4px;
+      width: 25%;
+      transform: scale(1);
+      transition: 0.6s;
+    }
+    .button:hover,
+    .button:focus {
+      transform: scale(1.05);
+      box-shadow: 0px 0px 48px 10px rgba(40, 149, 232, 0.7);
+    }
+
+    .form-bg {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(94, 110, 141, 0.5);
+      overflow-y: auto;
+      z-index: -1;
+      display: none;
+    }
+    .form {
+      background-color: #2694e8;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+      display: flex;
+      width: 100%;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      padding: 20px;
+      color: #fff;
+      text-align: center;
+    }
+    .form-control {
+      margin: 2px 0px;
+      width: 50%;
     }
   </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      document.getElementById('_form').addEventListener("click", _closeform);
+    });
+
+    function _closeform(event) {
+      // Close and reset form if form-bg is clicked
+      if (event.target.classList.contains('form-bg')) {
+        var form = document.querySelector('.form-bg');
+        if (form) { 
+          (form.children[0].children[0]).reset();
+          form.setAttribute("style", "z-index: -1; display: none;"); 
+        }
+      }
+    }
+
+    function _new() {
+      let clone = document.querySelector('drink-card').cloneNode(true);
+      if (clone) {
+        document.getElementById('cards').appendChild(clone); 
+        let card = document.getElementById('cards').children[document.getElementById('cards').children.length - 1];
+        console.log(card.shadowRoot); // DEBUG
+        card.classList.add('dupecard'); // BROKEN
+        card.children[3].addEventListener('click', _details); // BROKEN
+      }
+    }
+    function _info() {
+      // Show form -- on form submit call below function
+      let form = document.querySelector('.form-bg');
+      if (form) { form.setAttribute("style", "z-index: 1; display: block;"); }
+    }
+    function info() {
+      // BROKEN (for same reason as above, also not updated)
+      // Change/keep clone info
+      var index = (document.getElementById('form_index')).value;
+      var url = document.getElementById('form_url');
+      var title = document.getElementById('form_title');
+      var brand = document.getElementById('form_brand');
+      var price = document.getElementById('form_price');
+      var size = document.getElementById('form_size');
+      var color = document.getElementById('form_color');
+      var calories = document.getElementById('form_calories');
+      if (url && (url).value != '') {
+        this.drink_imageurl = (url).value;
+      }
+      if (title && (title).value != '') {
+        this.drink_title = (title).value;
+      }
+      if (brand && (brand).value != '') {
+        this.drink_brand = (brand).value;
+      }
+      if (price && (price).value != '') {
+        this.drink_price = Number((price).value);
+      }
+      if (size && (size).value != '') {
+        this.drink_size = Number((size).value);
+      }
+      if (color && (color).value != '') {
+        this.drink_color = (color).value;
+      }
+      if (calories && (calories).value != '') {
+        this.drink_calories = Number((calories).value);
+      }
+      // Reset and hide form
+      var form = document.querySelector('.form-bg');
+      if (form) { 
+        (form.children[0].children[0]).reset();
+        form.setAttribute("style", "z-index: -1; display: none;"); 
+      }
+    }
+    function _delete() {
+      var dupecards = document.querySelectorAll('.dupecard');
+      if (dupecards) { document.getElementById('cards').removeChild(dupecards[dupecards.length - 1]); }
+    }
+
+    function _details(event) {
+    if (event.target) {
+      let desc = event.target.previousElementSibling;
+      if (desc) { (window.getComputedStyle(desc).display == "none") ? desc.setAttribute("style", "display: ") : desc.setAttribute("style", "display: none"); }
+    }
+  }
+  </script>
 </head>
 
 <body>  
-  <drink-card></drink-card>
-  <meme-maker style="max-width: 300px;" image-url="https://picsum.photos/300" top-text="I CAN USE" bottom-text="MEME MAKER"></meme-maker>
+  <div class="controls">
+    <button onclick="_new()" class="button">add clone card</button>
+    <button onclick="_info()" class="button">change clone details</button>
+    <button onclick="_delete()" class="button">delete newest clone</button>
+  </div>
+  <div id="cards" class="cards">
+    <drink-card></drink-card>
+  </div>
+  <div class="form-bg" id="_form">
+    <div class="form">
+      <form onsubmit="return false" action="">
+        <p>enter nothing to keep an option the same as it currently is</p>
+        <input class="form-control" id="form_index" type="text" placeholder="Clone Index (0-...)" />
+        <input class="form-control" id="form_url" type="text" placeholder="Image URL" />
+        <input class="form-control" id="form_title" type="text" placeholder="Title" />
+        <input class="form-control" id="form_brand" type="text" placeholder="Brand Name" />
+        <input class="form-control" id="form_price" type="text" placeholder="Price ($)" />
+        <input class="form-control" id="form_size" type="text" placeholder="Size (oz)" />
+        <input class="form-control" id="form_color" type="text" placeholder="Color" />
+        <input class="form-control" id="form_calories" type="text" placeholder="Calories" />
+        <button class="form-control" style="width: 51%;" @click=${this.info}>submit</button>
+      </form>
+    </div>
+  </div>
   <script type="module" src="./out-tsc/src/drink-card.js"></script>
-  <script type="module" src="./node_modules/@lrnwebcomponents/meme-maker/src/meme-maker.js"></script>
 </body>
 
 </html>

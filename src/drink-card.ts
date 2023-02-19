@@ -1,55 +1,38 @@
 import { LitElement, html, css } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import "@lrnwebcomponents/meme-maker/meme-maker.js";
 
 @customElement('drink-card')
 export class DrinkCard extends LitElement {
   static styles = css`
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-      background-color: #ededed;
-    }
-
-    @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
-    
-    .controls {
-      margin: 16px auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-evenly;
-    }
-    .controls > .button {
-      width: 20%;
-    }
-
-    .cards {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap');
 
     .card {
       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
       max-width: 300px !important;
       margin: 8px 8px;
       text-align: center;
-      font-family: "Roboto Mono", monospace;
+      font-family: 'Lato', sans-serif;
     }
-    .card img {
+    .card meme-maker {
       width: 100%;
       margin: 10px 0px;
     }
-    .card h2 {
+    .card h1 {
       margin: 0 !important;
       padding: 12px 12px;
+      font-weight: 400;
+      font-size: 30px;
+      overflow-y: hidden;
+      overflow-x: hidden;
     }
     .card p {
       margin: 2px 2px;
+      font-weight: 300;
     }
     .card > .button {
-      display: none;
+      display: inline-block;
+      visibility: hidden;
     }
 
     .button {
@@ -76,43 +59,13 @@ export class DrinkCard extends LitElement {
 
     @media (min-width: 501px) and (max-width: 800px) {
       .card > .button {
-        display: inline-block;
+        visibility: visible;
       }
     }
     @media (max-width: 500px) {
       .card {
         transform: scale(1.1);
       }
-    }
-
-    .form-bg {
-      position: fixed;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 100%;
-      background-color: rgba(94, 110, 141, 0.5);
-      overflow-y: auto;
-      z-index: -1;
-      display: none;
-    }
-    .form {
-      background-color: #2694e8;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-      display: flex;
-      width: 100%;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-      position: relative;
-      padding: 20px;
-      color: #fff;
-      text-align: center;
-    }
-    .form-control {
-      margin: 2px 0px;
-      width: 50%;
     }
   `;
 
@@ -125,19 +78,8 @@ export class DrinkCard extends LitElement {
   @property({ type: Number }) drink_size = 8.4;
   @property({ type: String }) drink_color = "Clear";
   @property({ type: Number }) drink_calories = 15;
-
-  _closeform(event: Event) {
-    // Close and reset form if form-bg is clicked
-    if ((event.target as Element).classList.contains('form-bg')) {
-      var form = this.shadowRoot?.querySelector('.form-bg');
-      if (form) { 
-        (<HTMLFormElement>form.children[0].children[0]).reset();
-        form.setAttribute("style", "z-index: -1; display: none;"); 
-      }
-    }
-  }
-
-  _new() {
+  
+  /*_new() {
     var clone = this.shadowRoot?.getElementById('card')?.cloneNode(true);
     if (clone) {
       (clone as Element).classList.add('dupecard');
@@ -192,7 +134,7 @@ export class DrinkCard extends LitElement {
     var dupecards = this.shadowRoot?.querySelectorAll('.dupecard');
     console.log(dupecards);
     if (dupecards) { this.shadowRoot?.getElementById('cards')?.removeChild(dupecards[dupecards.length - 1]); }
-  }
+  }*/
 
   _details(event: Event) {
     if (event.target) {
@@ -210,45 +152,22 @@ export class DrinkCard extends LitElement {
 
   render() {
     return html`
-      <div class="controls">
-        <button @click=${this._new} class="button">add clone card</button>
-        <button @click=${this._info} class="button">change clone details</button>
-        <button @click=${this._delete} class="button">delete newest clone</button>
-      </div>
-      <div id="cards" class="cards">
-        <div id="card" class="card">
-          <img
-            src=${this.drink_imageurl}
-            style="max-width:200px"
-            id="image"
-          />
-          <h2 @click=${this._title} id="title">${this.drink_title}</h2>
-          <slot id="description">
-            <p>Brand: ${this.drink_brand}</p>
-            <p>Price: $${this.drink_price}</p>
-            <p>Size: ${this.drink_size}oz</p>
-            <p>Color: ${this.drink_color}</p>
-            <p style="margin-bottom: 8px;">Calories: ${this.drink_calories}</p>
-          </slot>
-          <button @click=${this._details} id="details" class="button">details</button>
-        </div>
-      </div>
-
-      <div class="form-bg" @click=${this._closeform}>
-        <div class="form">
-          <form onsubmit="return false" action="">
-            <p>enter nothing to keep an option the same as it currently is</p>
-            <input class="form-control" id="form_index" type="text" placeholder="Clone Index (0-...)" />
-            <input class="form-control" id="form_url" type="text" placeholder="Image URL" />
-            <input class="form-control" id="form_title" type="text" placeholder="Title" />
-            <input class="form-control" id="form_brand" type="text" placeholder="Brand Name" />
-            <input class="form-control" id="form_price" type="text" placeholder="Price ($)" />
-            <input class="form-control" id="form_size" type="text" placeholder="Size (oz)" />
-            <input class="form-control" id="form_color" type="text" placeholder="Color" />
-            <input class="form-control" id="form_calories" type="text" placeholder="Calories" />
-            <button class="form-control" style="width: 51%;" @click=${this.info}>submit</button>
-          </form>
-        </div>
+      <div id="card" class="card" pseudo="card">
+        <meme-maker 
+          image-url="${this.drink_imageurl}" 
+          bottom-text="${this.drink_title}"
+          id="image"
+        >          
+        </meme-maker>
+        <h1 @click=${this._title} id="title">${this.drink_title}</h1>
+        <slot id="description">
+          <p>Brand: ${this.drink_brand}</p>
+          <p>Price: $${this.drink_price}</p>
+          <p>Size: ${this.drink_size}oz</p>
+          <p>Color: ${this.drink_color}</p>
+          <p style="margin-bottom: 8px;">Calories: ${this.drink_calories}</p>
+        </slot>
+        <button @click=${this._details} id="details" class="button">details</button>
       </div>
     `;
   }
