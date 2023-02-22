@@ -59,6 +59,11 @@
       box-shadow: 0px 0px 48px 10px rgba(40, 149, 232, 0.7);
     }
 
+    drink-card p {
+      margin: 2px 2px;
+      font-weight: 300;
+    }
+
     .form-bg {
       position: fixed;
       left: 0;
@@ -90,6 +95,7 @@
     }
   </style>
 
+  <script src="./node_modules/@lrnwebcomponents/meme-maker/meme-maker.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function(event) {
       document.getElementById('_form').addEventListener("click", _closeform);
@@ -106,15 +112,26 @@
       }
     }
 
+    function _details(event) {
+      if (event.target) {
+        let desc = event.target.previousElementSibling;
+        if (desc) { (window.getComputedStyle(desc).display == "none") ? desc.setAttribute("style", "display: ") : desc.setAttribute("style", "display: none"); }
+      }
+    }
+    function _title(event) {
+      console.log(event.target);
+      if (event.target) {
+        var title = event.target;
+        if (title) { (title.innerHTML == "Clicked") ? title.innerHTML = this.drink_title : title.innerHTML = "Clicked" }
+      }
+    }
+
     function _new() {
       let clone = document.querySelector('drink-card').cloneNode(true);
       if (clone) {
         document.getElementById('cards').appendChild(clone); 
         let card = document.getElementById('cards').children[document.getElementById('cards').children.length - 1];
-        console.log(card.shadowRoot); // DEBUG
-        console.log(card.shadowRoot.querySelector(".card")) // DEBUG
-        card.classList.add('dupecard'); // BROKEN
-        card.children[3].addEventListener('click', _details); // BROKEN
+        card.classList.add('dupecard'); 
       }
     }
     function _info() {
@@ -122,10 +139,18 @@
       let form = document.querySelector('.form-bg');
       if (form) { form.setAttribute("style", "z-index: 1; display: block;"); }
     }
+    function clearSlot(slot, index) {
+      var card = document.getElementById('cards').children[index];
+      var deletions = card.querySelectorAll(`[slot="${slot}"]`);
+      deletions.forEach((deletion) => {
+	      card.removeChild(deletion);
+      });
+    }
     function info() {
-      // BROKEN (for same reason as above, also not updated)
-      // Change/keep clone info
+      // Get card index and assign a var to its instance
       var index = (document.getElementById('form_index')).value;
+      var card = document.getElementById('cards').children[index];
+      // Get form content or lack thereof
       var url = document.getElementById('form_url');
       var title = document.getElementById('form_title');
       var brand = document.getElementById('form_brand');
@@ -134,25 +159,64 @@
       var color = document.getElementById('form_color');
       var calories = document.getElementById('form_calories');
       if (url && (url).value != '') {
-        this.drink_imageurl = (url).value;
+        clearSlot("image", index);
+        var _image = document.createElement('meme-maker');
+        _image.setAttribute("image-url", `${url.value}`);
+        _image.setAttribute("id", "image");
+        _image.setAttribute("slot", "image");
+        card.appendChild(_image);
+        //this.drink_imageurl = (url).value;
       }
       if (title && (title).value != '') {
-        this.drink_title = (title).value;
+        clearSlot("title", index);
+        var _title = document.createElement('h1');
+        _title.innerHTML = title.value;
+        _title.setAttribute("slot", "title");
+        _title.setAttribute("id", "title");
+        _title.setAttribute("onclick", "_title()");
+        card.appendChild(_title);
+        //this.drink_title = (title).value;
       }
       if (brand && (brand).value != '') {
-        this.drink_brand = (brand).value;
+        clearSlot("brand", index);
+        var _brand = document.createElement('p');
+        _brand.innerHTML = "Brand: " + brand.value;
+        _brand.setAttribute("slot", "brand");
+        card.appendChild(_brand);
+        //this.drink_brand = (brand).value;
       }
       if (price && (price).value != '') {
-        this.drink_price = Number((price).value);
+        clearSlot("price", index);
+        var _price = document.createElement('p');
+        _price.innerHTML = "Price: $" + price.value;
+        _price.setAttribute("slot", "price");
+        card.appendChild(_price);
+        //this.drink_price = Number((price).value);
       }
       if (size && (size).value != '') {
-        this.drink_size = Number((size).value);
+        clearSlot("size", index);
+        var _size = document.createElement('p');
+        _size.innerHTML = "Size: " + size.value + "oz";
+        _size.setAttribute("slot", "size");
+        card.appendChild(_size);
+        //this.drink_size = Number((size).value);
       }
       if (color && (color).value != '') {
-        this.drink_color = (color).value;
+        clearSlot("color", index);
+        var _color = document.createElement('p');
+        _color.innerHTML = "Color: " + color.value;
+        _color.setAttribute("slot", "color");
+        card.appendChild(_color);
+        //this.drink_color = (color).value;
       }
       if (calories && (calories).value != '') {
-        this.drink_calories = Number((calories).value);
+        clearSlot("calories", index);
+        var _calories = document.createElement('p');
+        _calories.innerHTML = "Calories: " + calories.value;
+        _calories.setAttribute("slot", "calories");
+        _calories.setAttribute("style", "margin-bottom: 8px;");
+        card.appendChild(_calories);
+        //this.drink_calories = Number((calories).value);
       }
       // Reset and hide form
       var form = document.querySelector('.form-bg');
@@ -165,30 +229,24 @@
       var dupecards = document.querySelectorAll('.dupecard');
       if (dupecards) { document.getElementById('cards').removeChild(dupecards[dupecards.length - 1]); }
     }
-
-    function _details(event) {
-    if (event.target) {
-      let desc = event.target.previousElementSibling;
-      if (desc) { (window.getComputedStyle(desc).display == "none") ? desc.setAttribute("style", "display: ") : desc.setAttribute("style", "display: none"); }
-    }
-  }
   </script>
 </head>
 
-<body>  
+<body> 
   <div class="controls">
     <button onclick="_new()" class="button">add clone card</button>
     <button onclick="_info()" class="button">change clone details</button>
     <button onclick="_delete()" class="button">delete newest clone</button>
   </div>
   <div id="cards" class="cards">
-    <drink-card></drink-card>
+    <drink-card>
+    </drink-card>
   </div>
   <div class="form-bg" id="_form">
     <div class="form">
       <form onsubmit="return false" action="">
         <p>enter nothing to keep an option the same as it currently is</p>
-        <input class="form-control" id="form_index" type="text" placeholder="Clone Index (0-...)" />
+        <input class="form-control" id="form_index" type="text" placeholder="Index (0-...)" />
         <input class="form-control" id="form_url" type="text" placeholder="Image URL" />
         <input class="form-control" id="form_title" type="text" placeholder="Title" />
         <input class="form-control" id="form_brand" type="text" placeholder="Brand Name" />
@@ -196,7 +254,7 @@
         <input class="form-control" id="form_size" type="text" placeholder="Size (oz)" />
         <input class="form-control" id="form_color" type="text" placeholder="Color" />
         <input class="form-control" id="form_calories" type="text" placeholder="Calories" />
-        <button class="form-control" style="width: 51%;" @click=${this.info}>submit</button>
+        <button class="form-control" style="width: 51%;" onclick="info()">submit</button>
       </form>
     </div>
   </div>

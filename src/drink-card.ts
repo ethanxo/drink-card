@@ -152,21 +152,22 @@ export class DrinkCard extends LitElement {
 
   render() {
     return html`
-      <div id="card" class="card" pseudo="card">
-        <meme-maker 
-          image-url="${this.drink_imageurl}" 
-          bottom-text="${this.drink_title}"
-          id="image"
-        >          
-        </meme-maker>
-        <h1 @click=${this._title} id="title">${this.drink_title}</h1>
-        <slot id="description">
-          <p>Brand: ${this.drink_brand}</p>
-          <p>Price: $${this.drink_price}</p>
-          <p>Size: ${this.drink_size}oz</p>
-          <p>Color: ${this.drink_color}</p>
-          <p style="margin-bottom: 8px;">Calories: ${this.drink_calories}</p>
+      <div id="card" class="card">
+        <slot name="image">
+          <meme-maker 
+            image-url="${this.drink_imageurl}" 
+            id="image"
+            >          
+          </meme-maker>
         </slot>
+        <slot name="title"><h1 @click=${this._title} id="title">${this.drink_title}</h1></slot>
+        <div id="description" slot="description">
+          <slot name="brand"><p>Brand: ${this.drink_brand}</p></slot>
+          <slot name="price"><p>Price: $${this.drink_price}</p></slot>
+          <slot name="size"><p>Size: ${this.drink_size}oz</p></slot>
+          <slot name="color"><p>Color: ${this.drink_color}</p></slot>
+          <slot name="calories" style="margin-bottom: 8px;"><p>Calories: ${this.drink_calories}</p></slot>
+        </div>
         <button @click=${this._details} id="details" class="button">details</button>
       </div>
     `;
