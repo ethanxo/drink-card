@@ -70,7 +70,7 @@ export class DrinkCard extends LitElement {
   `;
 
   // Title and image
-  @property({ type: String }) drink_title = "Sugar-Free Red Bull";
+  @property({ type: String, reflect: true }) drink_title = "Sugar-Free Red Bull";
   @property({ type: String }) drink_imageurl = "https://www.webstaurantstore.com/images/products/large/322422/2333053.jpg";
   // Properties
   @property({ type: String }) drink_brand = "Red Bull GmbH";
@@ -78,6 +78,7 @@ export class DrinkCard extends LitElement {
   @property({ type: Number }) drink_size = 8.4;
   @property({ type: String }) drink_color = "Clear";
   @property({ type: Number }) drink_calories = 15;
+  @property({ type: Boolean, reflect: true }) drink_background = false;
   
   /*_new() {
     var clone = this.shadowRoot?.getElementById('card')?.cloneNode(true);
@@ -149,12 +150,20 @@ export class DrinkCard extends LitElement {
       if (title) { (title.innerHTML == "Clicked") ? title.innerHTML = this.drink_title : title.innerHTML = "Clicked" }
     }
   }
+  _background(event: Event) {
+    this.drink_background = true;
+  }
+  background(event: Event) {
+    this.drink_background = false;
+  }
 
   render() {
     return html`
       <div id="card" class="card">
         <slot name="image">
           <meme-maker 
+            @mousedown=${this._background}
+            @mouseup=${this.background}
             image-url="${this.drink_imageurl}" 
             id="image"
             >          

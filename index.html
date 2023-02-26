@@ -12,6 +12,10 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
 
+    :root {
+      --drinkbg: "";
+    }
+
     html,
     body {
       margin: 0;
@@ -62,6 +66,10 @@
     drink-card p {
       margin: 2px 2px;
       font-weight: 300;
+    }
+
+    drink-card[drink_background] {
+      background-color: var(--drinkbg);
     }
 
     .form-bg {
@@ -131,7 +139,7 @@
       if (clone) {
         document.getElementById('cards').appendChild(clone); 
         let card = document.getElementById('cards').children[document.getElementById('cards').children.length - 1];
-        card.classList.add('dupecard'); 
+        //card.classList.add('dupecard'); 
       }
     }
     function _info() {
@@ -207,6 +215,7 @@
         _color.innerHTML = "Color: " + color.value;
         _color.setAttribute("slot", "color");
         card.appendChild(_color);
+        document.documentElement.style.setProperty('--drinkbg', color.value);
         //this.drink_color = (color).value;
       }
       if (calories && (calories).value != '') {
