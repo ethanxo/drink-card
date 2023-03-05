@@ -6,10 +6,18 @@ import "@lrnwebcomponents/meme-maker/meme-maker.js";
 export class DrinkCard extends LitElement {
   static styles = css`
     @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap');
+    
+    :root {
+      --drinkbg: "white";
+    }
+    *[drink_background] {
+      background-color: var(--drinkbg)
+    }
 
     .card {
       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
       max-width: 300px !important;
+      min-width: 300px !important;
       margin: 8px 8px;
       text-align: center;
       font-family: 'Lato', sans-serif;
@@ -76,9 +84,10 @@ export class DrinkCard extends LitElement {
   @property({ type: String }) drink_brand = "Red Bull GmbH";
   @property({ type: Number }) drink_price = 2.99;
   @property({ type: Number }) drink_size = 8.4;
-  @property({ type: String }) drink_color = "Clear";
+  @property({ type: String, reflect: true }) drink_color = "Clear";
   @property({ type: Number }) drink_calories = 15;
   @property({ type: Boolean, reflect: true }) drink_background = false;
+  @property({ type:Boolean, reflect: true }) details_shown = true;
   
   /*_new() {
     var clone = this.shadowRoot?.getElementById('card')?.cloneNode(true);
@@ -141,7 +150,16 @@ export class DrinkCard extends LitElement {
     if (event.target) {
       var _target = event.target as Element;
       var desc = _target.previousElementSibling;
-      if (desc) { (window.getComputedStyle(desc).display == "none") ? desc.setAttribute("style", "display: ") : desc.setAttribute("style", "display: none"); }
+      if (desc) { 
+        if (window.getComputedStyle(desc).display == "none") {
+          desc.setAttribute("style", "display: ");
+          this.details_shown = true;
+        }
+        else {
+          desc.setAttribute("style", "display: none");
+          this.details_shown = false;
+        }
+      }
     }
   }
   _title(event: Event) {

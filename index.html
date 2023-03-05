@@ -12,10 +12,6 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
 
-    :root {
-      --drinkbg: "";
-    }
-
     html,
     body {
       margin: 0;
@@ -127,7 +123,6 @@
       }
     }
     function _title(event) {
-      console.log(event.target);
       if (event.target) {
         var title = event.target;
         if (title) { (title.innerHTML == "Clicked") ? title.innerHTML = this.drink_title : title.innerHTML = "Clicked" }
@@ -183,6 +178,7 @@
         _title.setAttribute("id", "title");
         _title.setAttribute("onclick", "_title()");
         card.appendChild(_title);
+        card.setProperty("drink_title", title.value)
         //this.drink_title = (title).value;
       }
       if (brand && (brand).value != '') {
@@ -215,7 +211,7 @@
         _color.innerHTML = "Color: " + color.value;
         _color.setAttribute("slot", "color");
         card.appendChild(_color);
-        document.documentElement.style.setProperty('--drinkbg', color.value);
+        card.style.setProperty('--drinkbg', color.value);
         //this.drink_color = (color).value;
       }
       if (calories && (calories).value != '') {
@@ -244,7 +240,7 @@
 <body> 
   <div class="controls">
     <button onclick="_new()" class="button">add clone card</button>
-    <button onclick="_info()" class="button">change clone details</button>
+    <button onclick="_info()" class="button">change card details</button>
     <button onclick="_delete()" class="button">delete newest clone</button>
   </div>
   <div id="cards" class="cards">
