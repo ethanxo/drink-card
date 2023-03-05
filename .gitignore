@@ -18,7 +18,7 @@
 # build
 /_site/
 /dist/
-/out-tsc/
+# /out-tsc/ Because this is typescript, it needs a JS to be output to be used elsewhere
 
 storybook-static
 custom-elements.json
