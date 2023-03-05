@@ -3,7 +3,7 @@
   "description": "Webcomponent drink-card following open-wc recommendations",
   "license": "MIT",
   "author": "drink-card",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "scripts": {
     "test": "tsc && wtr --coverage",
